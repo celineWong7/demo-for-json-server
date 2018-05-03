@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>使用jq ajax方法操作数据</title>
+	<script type="text/javascript" src="jq.js"></script>
+</head>
+<body>
+
+<p>获取所有水果信息</p>
+<button id="getBtn">get</button>
+<div id="showData"></div>
+
+<hr>
+<p>添加一种新水果</p>
+水果：<input id="fruitName" type="text" name="fruitName"><br>
+价格：<input id="fruitPrice" type="text" name="fruitPrice"><br>
+<button id="postBtn">add</button>
+
+<hr>
+<p>更新水果价格</p>
+水果id：<input id="putId" type="text" name="fruitId"><br>
+价格：<input id="putPrice" type="text" name="fruitPrice"><br>
+<button id="putBtn">put</button>
+<hr>
+水果id：<input id="patchId" type="text" name="patchId"><br>
+价格：<input id="patchPrice" type="text" name="patchPrice"><br>
+<button id="patchBtn">patch</button>
+
+
+<hr>
+<p>通过水果名更新水果价格</p>
+水果：<input id="editName" type="text" name="fruitName"><br>
+价格：<input id="editPrice" type="text" name="fruitPrice"><br>
+<button id="editBtn">edit</button>
+
+
+<hr>
+<p>删除水果</p>
+水果id：<input id="delId" type="text" name="delName"><br>
+<button id="delOne">del</button>
+<button id="delAll">delAll</button>
+
+
+
+<script type="text/javascript">
+//获取所有数据
+$("#getBtn").click(function(){
+	$.ajax({
+		type: 'get',
+		url: 'http://localhost:3003/fruits',
+		success: function(data){
+			// data 对象数组
+			var h = ""
+			h += "<table border='1'>"
+			h += "<thead><th>ID</th><th>name</th><th>price</th></thead>"
+			h += "<tbody>"
+			for(var i=0; i<data.length; i++){
+				var o = data[i]
+				h += "<tr>"
+				h += "<td>" + o.id + "</td><td>" + o.name + "</td><td>" + o.price + "</td>"
+				h += "</tr>"
+			}
+			h += "<tbody>"
+			h += "</table>"
+			$("#showData").empty().append(h)
+		},
+		error:function(){
+			alert("get : error")
+		}
+	})
+})
+
+// 创建新数据
+$("#postBtn").click(function(){
+	$.ajax({
+		type: 'post',
+		url: 'http://localhost:3003/fruits',
+		data: {
+			name:  $("#fruitName").val(),
+			price: $("#fruitPrice").val()
+		},
+		success: function(data){
+			console.log("success")
+		},
+		error:function(){
+			alert("error")
+		}
+	})
+})
+
+
+// 更新数据
+$("#putBtn").click(function(){
+	$.ajax({
+		type: 'put',
+		url: 'http://localhost:3003/fruits/'+ $("#putId").val(),
+		data: {
+			price: $("#putPrice").val()
+		},
+		success: function(data){
+			console.log("put success")
+		},
+		error:function(){
+			alert("put error")
+		}
+	})
+})
+
+// 局部更新数据
+$("#patchBtn").click(function(){
+	$.ajax({
+		type: 'patch',
+		url: 'http://localhost:3003/fruits/'+ $("#patchId").val(),
+		data: {
+			price: $("#patchPrice").val()
+		},
+		success: function(data){
+			console.log("patch success")
+		},
+		error:function(){
+			alert("patch error")
+		}
+	})
+})
+
+
+// 根据非id字段来局部更新数据
+$("#editBtn").click(function(){
+	getFun($("#editName").val(),patchFun)
+
+})
+
+
+// 删除数据
+$("#delOne").click(function(){
+	$.ajax({
+		type: 'delete',
+		url: 'http://localhost:3003/fruits/'+ $("#delId").val(),
+		success: function(data){
+			console.log("del success")
+		},
+		error:function(){
+			alert("del error")
+		}
+	})
+})
+
+// 删除所有数据
+$("#delAll").click(function(){
+	// 此处就没有动态去获取db.json中fruits的最大id，直接带入7
+	for(var i=0; i<=7; i++){
+		delFun(i)
+	}
+})
+
+// 通过字段name来获取数据，比执行回调函数f
+function getFun(name,f){
+	$.ajax({
+		type: 'get',
+		url: 'http://localhost:3003/fruits'+'?name='+name,
+		success: function(data){
+			// data 对象数组
+			console.log(data[0]);
+			if (typeof f == "function") f.call(this,data[0].id) 
+		},
+		error:function(){
+			alert("error")
+		}
+	})
+}
+
+// 根据id，更新局部数据函数
+function patchFun(id){
+		$.ajax({
+	// PATCH方法是新引入的，是对PUT方法的补充，对已知资源进行局部更新，即只更新data指定的字段。  PUT方法，会根据data直接替换掉整个对象。
+		type: 'patch', 
+		url: 'http://localhost:3003/fruits/'+id,
+		data: {
+			price: $("#editPrice").val()
+		},
+		success: function(data){
+			console.log("success",data)
+		},
+		error:function(){
+			alert("error")
+		}
+	})
+}
+
+
+// 根据id，删除数据函数
+function delFun(id){
+	$.ajax({
+		type: 'delete', 
+		url: 'http://localhost:3003/fruits/'+id,
+		data:'',
+		success: function(data){
+			console.log("del success",data)
+		},
+		error:function(){
+			console.log("del error")
+		}
+	})
+}
+</script>
+</body>
+</html>
