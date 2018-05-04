@@ -1,0 +1,20 @@
+1 添加npm依赖：
+	npm install faker --save 
+
+2 在js文件中引入faker.js
+	var faker = require('faker')
+
+3 使用faker.js的各种方法产生需要的数据
+	var randomName = faker.name.findName(); // Caitlyn Kerluke
+        var randomEmail = faker.internet.email(); // Rusty@arne.info
+        var randomCard = faker.helpers.createCard(); // random contact card containing many properties
+
+
+
+
+其他mock数据生成工具：
+https://blog.csdn.net/sophiawoo/article/details/51812207
+测试数据的生成——faker、chance和json-schema-faker
+
+github：
+https://github.com/Marak/faker.js
