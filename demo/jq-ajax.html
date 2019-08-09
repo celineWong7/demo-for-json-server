@@ -43,7 +43,7 @@
 
 
 <script type="text/javascript">
-//获取所有数据
+//获取所有数据 - get
 $("#getBtn").click(function(){
 	$.ajax({
 		type: 'get',
@@ -70,7 +70,7 @@ $("#getBtn").click(function(){
 	})
 })
 
-// 创建新数据
+// 创建新数据 - add
 $("#postBtn").click(function(){
 	$.ajax({
 		type: 'post',
@@ -80,7 +80,7 @@ $("#postBtn").click(function(){
 			price: $("#fruitPrice").val()
 		},
 		success: function(data){
-			console.log("success")
+			console.log("success",data)
 		},
 		error:function(){
 			alert("error")

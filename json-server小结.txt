@@ -1,0 +1,48 @@
+1 安装
+  $ npm install -g json-server
+
+2 新建一个db.json文件，启动json-server
+  json-server --watch db.json
+
+  -----注意：启动指令需要再db.json文件所在位置执行。如果执行以上指令的文件路径位置没有db.json文件，会自动生成一个默认的db.json文件
+
+3 指定端口的启动服务（默认是3000）
+  （1）
+       json-server db.json -p 3003            指定端口
+
+  （2）
+	新建一个配置文件 json-server.json，写入：
+	  {
+		"port": 3003
+		
+	  }
+	执行指令：json-server db.json
+
+  （3）
+       新建一个package.json文件，写入：
+          {
+  		"scripts": {
+   			 "mock": "json-server db.json --port 3003"
+  		}
+	   }
+
+       执行指令： npm run mock
+
+
+
+
+
+参考文档：
+https://blog.csdn.net/mpdemp/article/details/78130852?locationNum=7&fps=1
+github 文档翻译。
+
+
+
+
+
+* ctrl+C 的方式关闭server应用，总是会导致程序未响应，但端口又被霸占着，
+   所以就到cmd界面直接去主动关掉占用端口的程序了。
+  
+netstat -nao              查看PID
+tasklist|findstr "5952"   查找对应PID 的应用程序   （此处一般都是node.exe）
+然后到任务管理器去关掉node.exe
